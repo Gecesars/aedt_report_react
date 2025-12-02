@@ -1,12 +1,13 @@
 param(
-    [string[]]$RequiredServices = @("Redis"),
+    [string[]]$RequiredServices = @(),
     [string]$AedtProcessName = "ansysedt",
     [string]$BackendDir = "backend",
     [string]$VenvName = ".venv",
     [string]$ApiHost = "127.0.0.1",
     [int]$Port = 8000,
     [switch]$StartMissingServices,
-    [switch]$SkipHealthCheck
+    [switch]$SkipHealthCheck,
+    [switch]$SkipAedtProcessCheck
 )
 
 function Write-Info($message) {
@@ -75,8 +76,12 @@ function Ensure-Venv {
 
     Write-Info "Garantindo dependencias instaladas..."
     Push-Location $ProjectPath
-    python -m pip install --upgrade pip | Out-Null
-    python -m pip install -e . | Out-Null
+    try {
+        python -m pip install --upgrade pip | Out-Null
+        python -m pip install -e . | Out-Null
+    } catch {
+        Write-Warn "Falha ao instalar dependencias automaticamente. Execute manualmente 'pip install -e .' se necessario."
+    }
     Pop-Location
 
     return $activateScript
@@ -124,14 +129,18 @@ try {
         throw "Diretorio do backend nao encontrado: $backendPath"
     }
 
-    Write-Info "Verificando servicos obrigatorios..."
-    foreach ($svc in $RequiredServices) {
-        if (![string]::IsNullOrWhiteSpace($svc)) {
-            Test-ServiceStatus -ServiceName $svc
+    if ($RequiredServices.Count -gt 0) {
+        Write-Info "Verificando servicos obrigatorios..."
+        foreach ($svc in $RequiredServices) {
+            if (![string]::IsNullOrWhiteSpace($svc)) {
+                Test-ServiceStatus -ServiceName $svc
+            }
         }
+    } else {
+        Write-Info "Nenhum servico definido em -RequiredServices. Pulando verificacao."
     }
 
-    if ($AedtProcessName) {
+    if (-not $SkipAedtProcessCheck -and $AedtProcessName) {
         Test-AedtProcess -ProcessName $AedtProcessName
     }
 
@@ -139,8 +148,18 @@ try {
     Start-Backend -ProjectPath $backendPath -ActivateScript $activateScript -ApiHost $ApiHost -Port $Port
 
     if (-not $SkipHealthCheck) {
-        Start-Sleep -Seconds 3
-        Test-BackendHealth -ApiHost $ApiHost -Port $Port
+        $maxAttempts = 5
+        for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+            Start-Sleep -Seconds 3
+            try {
+                Test-BackendHealth -ApiHost $ApiHost -Port $Port
+                break
+            } catch {
+                if ($attempt -eq $maxAttempts) {
+                    Write-Warn "Nao foi possivel confirmar o backend apos $maxAttempts tentativas."
+                }
+            }
+        }
     }
 
     Write-Info "Script finalizado. Verifique a janela do backend para logs do FastAPI."

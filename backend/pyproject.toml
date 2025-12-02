@@ -25,3 +25,4 @@ dev = ["pytest", "httpx", "ruff"]
 
 [tool.setuptools.packages.find]
 where = ["app"]
+
