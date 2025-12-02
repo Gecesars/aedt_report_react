@@ -128,7 +128,7 @@ pytest -q  # valida repositorios/persistencia
 `
 - Checa servicos informados (ex.: Redis) e o processo do AEDT (nsysedt por padrao).
 - Garante/ativa .venv, instala dependencias e abre nova janela com uvicorn.
-- -StartMissingServices tenta iniciar servicos parados; -Host/-Port mudam a porta; -SkipHealthCheck ignora o GET /health.
+- -StartMissingServices tenta iniciar servicos parados; -ApiHost/-Port mudam host/porta do uvicorn; -SkipHealthCheck ignora o GET /health.
 
 Celery worker + Redis:
 `powershell

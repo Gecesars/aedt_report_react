@@ -3,7 +3,7 @@ param(
     [string]$AedtProcessName = "ansysedt",
     [string]$BackendDir = "backend",
     [string]$VenvName = ".venv",
-    [string]$Host = "127.0.0.1",
+    [string]$ApiHost = "127.0.0.1",
     [int]$Port = 8000,
     [switch]$StartMissingServices,
     [switch]$SkipHealthCheck
@@ -86,27 +86,28 @@ function Start-Backend {
     param(
         [string]$ProjectPath,
         [string]$ActivateScript,
-        [string]$Host,
+        [string]$ApiHost,
         [int]$Port
     )
 
     $command = @"
 cd `"$ProjectPath`"
 . `"$ActivateScript`"
-uvicorn app.main:app --host $Host --port $Port --reload
+uvicorn app.main:app --host $ApiHost --port $Port --reload
 "@
 
-    Write-Info "Iniciando backend FastAPI em nova janela (http://$Host:$Port)..."
+    $endpoint = "http://{0}:{1}" -f $ApiHost, $Port
+    Write-Info "Iniciando backend FastAPI em nova janela ($endpoint)..."
     Start-Process powershell -ArgumentList "-NoExit", "-Command", $command | Out-Null
 }
 
 function Test-BackendHealth {
     param(
-        [string]$Host,
+        [string]$ApiHost,
         [int]$Port
     )
 
-    $uri = "http://$Host`:$Port/health"
+    $uri = "http://$ApiHost`:$Port/health"
     try {
         Write-Info "Verificando health endpoint em $uri ..."
         $response = Invoke-RestMethod -Uri $uri -TimeoutSec 5
@@ -135,11 +136,11 @@ try {
     }
 
     $activateScript = Ensure-Venv -ProjectPath $backendPath -VenvDir $VenvName
-    Start-Backend -ProjectPath $backendPath -ActivateScript $activateScript -Host $Host -Port $Port
+    Start-Backend -ProjectPath $backendPath -ActivateScript $activateScript -ApiHost $ApiHost -Port $Port
 
     if (-not $SkipHealthCheck) {
         Start-Sleep -Seconds 3
-        Test-BackendHealth -Host $Host -Port $Port
+        Test-BackendHealth -ApiHost $ApiHost -Port $Port
     }
 
     Write-Info "Script finalizado. Verifique a janela do backend para logs do FastAPI."
