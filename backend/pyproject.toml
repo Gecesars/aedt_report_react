@@ -1,0 +1,27 @@
+﻿[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hfss-control"
+version = "0.1.0"
+description = "API FastAPI para controle do HFSS via PyAEDT"
+authors = [{name = "Equipe PyAEDT", email = "dev@example.com"}]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.23",
+    "pyaedt>=0.8",
+    "celery>=5.3",
+    "redis>=5.0",
+    "python-multipart>=0.0.7",
+    "pydantic-settings>=2.1",
+    "loguru>=0.7",
+    "jinja2>=3.1"
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["app"]
