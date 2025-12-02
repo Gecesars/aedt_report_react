@@ -23,6 +23,7 @@
 - `backend/app/routers/simulations.py`: cria job Celery (fallback sincrono), retorna progresso e frames persistidos.
 - `backend/app/routers/datasheets.py`: exposto em `/datasheets/{design}`.
 - `backend/app/celery_app.py` + `backend/app/workers/tasks.py`: configuracao Celery e task `generate_simulation_video`.
+- `scripts/start-backend.ps1`: utilitario PowerShell que verifica servicos, ativa `.venv` e inicia o uvicorn com health-check.
 
 ## 3. Frontend
 - `frontend/package.json`, `tsconfig*.json`, `vite.config.ts`, `tailwind.config.cjs`, `postcss.config.cjs`, `index.html`: setup do projeto Vite/React/TS/Tailwind.

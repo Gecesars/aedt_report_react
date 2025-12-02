@@ -112,30 +112,39 @@ styles/globals.css                # Tailwind + tokens
 
 ## Instrucoes de execucao
 ### Backend
-```powershell
+`powershell
 cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .[dev]
 # Ajuste .env se necessario (REDIS_URL, AEDT install path)
 uvicorn app.main:app --reload
-pytest -q  # valida repositórios/persistencia
-```
+pytest -q  # valida repositorios/persistencia
+`
+
+#### Script automatizado (PowerShell)
+`powershell
+.\scripts\start-backend.ps1 -RequiredServices Redis -AedtProcessName ansysedt
+`
+- Checa servicos informados (ex.: Redis) e o processo do AEDT (nsysedt por padrao).
+- Garante/ativa .venv, instala dependencias e abre nova janela com uvicorn.
+- -StartMissingServices tenta iniciar servicos parados; -Host/-Port mudam a porta; -SkipHealthCheck ignora o GET /health.
+
 Celery worker + Redis:
-```powershell
+`powershell
 redis-server # ou docker run -p 6379:6379 redis:7
 celery -A app.celery_app.celery_app worker -Q hfss -l info
-```
+`
 ### Frontend
-```powershell
+`powershell
 cd frontend
 npm install
-$env:VITE_API_BASE_URL="http://localhost:8000"
+="http://localhost:8000"
 npm run dev -- --host
-```
-Abra `http://localhost:5173`.
-
+`
+Abra http://localhost:5173.
 ## Proximos passos sugeridos
 1. Conectar `extractors.py` aos verdadeiros objetos PyAEDT (Reports, FieldPlots, post-processing) e gerar imagens/frames reais.
 2. Adicionar autenticacao e auditoria a nivel de API.
 3. Automatizar pipeline de exportacao (PDF datasheet, videos glTF) usando Celery + armazenamento externo (S3, Azure Blob).
+
