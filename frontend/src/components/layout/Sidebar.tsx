@@ -5,7 +5,8 @@ const navItems = [
   { label: "Resumo", to: "/summary/default" },
   { label: "S-params", to: "/sparameters/default" },
   { label: "Radiacao", to: "/radiation/default" },
-  { label: "Videos", to: "/simulations/default" },\n  { label: "Datasheet", to: "/datasheet/default" }
+  { label: "Videos", to: "/simulations/default" },
+  { label: "Datasheet", to: "/datasheet/default" }
 ];
 
 export default function Sidebar() {

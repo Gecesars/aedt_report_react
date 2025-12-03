@@ -1,1 +1,3 @@
-﻿from .main import app\n__all__ = ['app']\n
+﻿from .main import app
+
+__all__ = ["app"]

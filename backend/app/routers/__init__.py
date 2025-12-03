@@ -1,1 +1,3 @@
-﻿from . import session, projects, designs, simulations, datasheets\n__all__ = ['session', 'projects', 'designs', 'simulations', 'datasheets']\n
+﻿from . import datasheets, designs, projects, session, simulations
+
+__all__ = ["datasheets", "designs", "projects", "session", "simulations"]

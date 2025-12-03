@@ -21,7 +21,8 @@ app.add_middleware(
 app.include_router(session.router, prefix="/session", tags=["session"])
 app.include_router(projects.router, prefix="/projects", tags=["projects"])
 app.include_router(designs.router, prefix="/designs", tags=["designs"])
-app.include_router(simulations.router, prefix="/simulations", tags=["simulations"])\napp.include_router(datasheets.router, prefix="/datasheets", tags=["datasheets"])
+app.include_router(simulations.router, prefix="/simulations", tags=["simulations"])
+app.include_router(datasheets.router, prefix="/datasheets", tags=["datasheets"])
 
 
 @app.get("/health")

@@ -74,7 +74,7 @@ class SimulationRepository:
         self.frames_store = JsonStore("sim_frames.json", {}, base_dir)
 
     def upsert_progress(self, progress: SimulationProgress) -> None:
-        self.progress_store.data[progress.job_id] = progress.model_dump()
+        self.progress_store.data[progress.job_id] = progress.model_dump(mode="json")
         self.progress_store.save()
 
     def get_progress(self, job_id: str) -> SimulationProgress | None:
@@ -84,7 +84,7 @@ class SimulationRepository:
         return SimulationProgress(**data)
 
     def add_frame(self, frame: SimulationFrame) -> None:
-        self.frames_store.data.setdefault(frame.job_id, []).append(frame.model_dump())
+        self.frames_store.data.setdefault(frame.job_id, []).append(frame.model_dump(mode="json"))
         self.frames_store.save()
 
     def list_frames(self, job_id: str) -> list[SimulationFrame]:

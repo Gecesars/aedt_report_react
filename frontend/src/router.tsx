@@ -16,7 +16,8 @@ const router = createBrowserRouter([
       { path: "summary/:designId", element: <SummaryPage /> },
       { path: "sparameters/:designId", element: <SParametersPage /> },
       { path: "radiation/:designId", element: <RadiationPage /> },
-      { path: "simulations/:designId", element: <SimulationVideoPage /> },\n      { path: "datasheet/:designId", element: <DatasheetPage /> }
+      { path: "simulations/:designId", element: <SimulationVideoPage /> },
+      { path: "datasheet/:designId", element: <DatasheetPage /> }
     ]
   }
 ]);
